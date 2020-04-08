@@ -1,0 +1,111 @@
+
+    public int[] maxset(int[] A) {
+        int u = 0;
+	
+	//We are checking if array contains all negative
+        for(int i = 0; i<A.length; i++){
+            if(A[i]<0){
+                u++;
+            }
+        }
+	
+	//if all elements are negative, return
+        if(u==A.length){
+            int[] a3 = new int[0];
+            return a3;
+        }
+
+	//decalring variables 
+        int max = 0;
+	long sum = 0;
+
+	//In map, we will store key as sum, and value as List, we will convert list to array at the end
+        HashMap<Long, List<Integer>> m = new HashMap<>();
+	//list to pass in map
+        List<Integer> l = new ArrayList<>();
+
+	//traversal around the array
+        for(int i = 0; i<A.length; i++){
+
+	    //Checking for positive numbers
+            if(A[i]>=0 && ((i<=A.length-1))){
+                sum = sum+A[i];
+                l.add(A[i]);
+
+		//Condition if "i" is at the last index, then directly add to the map. Since no more traversal
+                if((i == A.length-1) && sum >0){
+                    m.put(sum, l);
+                        sum = 0;
+                        l = new ArrayList<>();
+                }
+            }
+
+	    //Special case if sum is always 
+            else if(sum == 0){
+                m.put(sum, l);
+                l = new ArrayList<>();
+            }
+
+	    //checking for negative numbers
+            else if(A[i]<0 && (i <= A.length-1)){
+
+		//if the previous sum is > 0
+                if(sum>0){
+		    // checking if the sum(key) is already present,
+                    if(m.containsKey(sum)){
+			//Making a copy of already presnt list in map with that key
+                       List<Integer> copy = new ArrayList<>(m.get(sum));
+			//as the condition, checking is they have size, 
+                        if(copy.size()<l.size()){
+                            m.put(sum, l);
+                            l = new ArrayList<>();
+                            sum = 0;
+                        }
+			//OR
+			//as the condition checking is they have same size, 
+			else if(copy.size() == l.size()){
+                            if(copy.get(0)==l.get(0)){
+                                  m.put(sum, l);
+                                  l = new ArrayList<>();
+                                  sum=0;
+                        }
+			//OR
+			//as the condition checking the lowest index value, 
+			else if((copy.get(0)<l.get(0))){
+                                    m.put(sum, l);
+                                    l = new ArrayList<>();
+                                    sum=0;
+                            }
+                        }
+                    
+                    }
+		    //Else directly adding it
+		    else{
+                        m.put(sum, l);
+                        sum = 0;
+                        l = new ArrayList<>();
+                    }
+                }
+            }
+        }
+	
+	//Checking if there are enteries in map
+        if(m.size()>0){
+	    //takings the keys
+            Object[] keys = m.keySet().toArray(); 
+	    //Sorting the keys
+            Arrays.sort(keys);
+	    //Copying the list related to that key
+            List<Integer> copy = (List) m.get(keys[keys.length-1]);
+            int[] a1 = new int[copy.size()];
+	    //converting list to key
+            for (int i =0; i < copy.size(); i++) {
+                a1[i] = copy.get(i);
+            }
+	    //return the array
+            return a1;
+        }
+	//If map size  = 0, return empty array
+        int[] a3 = new int[0];
+        return a3;
+    }
